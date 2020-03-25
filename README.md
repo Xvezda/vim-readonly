@@ -24,15 +24,16 @@ make install
 ## Usage
 
 `g:readonly_automatic` is enabled by default.
+
 Use `:Readonly` to manually enable readonly option, and `:Readonly!` to disable.
 
 
 ## Global options
 
-| Flag                 | Description                                        |
-| -------------------- | -------------------------------------------------- |
-| g:readonly_automatic | Automatically set readonly when patterns are match |
-| g:readonly_paths     | Set patterns of path to set readonly option        |
+| Flag                   | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| `g:readonly_automatic` | Automatically set readonly when patterns are match |
+| `g:readonly_paths`     | Set patterns of path to set readonly option        |
 
 
 ## License

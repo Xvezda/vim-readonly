@@ -21,6 +21,12 @@ or
 make install
 ```
 
+## Usage
+
+`g:readonly_automatic` is enabled by default.
+Use `:Readonly` to manually enable readonly option, and `:Readonly!` to disable.
+
+
 ## Global options
 
 | Flag                 | Description                                        |

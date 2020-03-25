@@ -35,7 +35,7 @@ endfunction
 
 
 function! s:set_option(flag) abort
-  let &readonly = a:flag
+  let &l:readonly = a:flag
 endfunction
 
 
@@ -69,7 +69,7 @@ if !exists('g:readonly_automatic')
 endif
 
 
-command! -bar -bang -complete=file Readonly execute s:set_option(<bang>1)
+command! -bar -bang Readonly execute s:set_option(<bang>1)
 
 if g:readonly_automatic
   augroup readonly_init

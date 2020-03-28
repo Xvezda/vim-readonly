@@ -50,26 +50,45 @@ function! s:check_path() abort
 endfunction
 
 
+if !exists('g:readonly_automatic')
+  let g:readonly_automatic = 1
+endif
+
+if !exists('g:readonly_nodejs')
+  let g:readonly_nodejs = 1
+endif
+
+if !exists('g:readonly_python')
+  let g:readonly_python = 1
+endif
+
+if !exists('g:readonly_check_virtualenv')
+  let g:readonly_check_virtualenv = 1
+endif
+
+
 " Option variables
 if !exists('g:readonly_paths')
   let g:readonly_paths = [
         \   '/usr/bin/lib',
         \   '/usr/local/lib/',
-        \   '/usr/local/include/',
-        \   '/node_modules/'
+        \   '/usr/local/include/'
         \ ]
+  " Add NodeJs Path
+  if g:readonly_nodejs
+    call extend(g:readonly_paths, ['/node_modules/'])
+  endif
   " Add python path
-  if !empty($PYTHONPATH)
-    call extend(g:readonly_paths, split($PYTHONPATH, ':'))
+  if g:readonly_python
+    if !empty($PYTHONPATH)
+      call extend(g:readonly_paths, split($PYTHONPATH, ':'))
+    endif
+    if !g:readonly_check_virtualenv || !empty($VIRTUAL_ENV)
+      call extend(g:readonly_paths, ['/venv/', '/env/'])
+    endif
   endif
 endif
 
-if !exists('g:readonly_automatic')
-  let g:readonly_automatic = 1
-endif
-
-
-command! -bar -bang Readonly execute s:set_option(<bang>1)
 
 if g:readonly_automatic
   augroup readonly_init
@@ -77,6 +96,8 @@ if g:readonly_automatic
     autocmd BufEnter * call s:check_path()
   augroup END
 endif
+
+command! -bar -bang Readonly execute s:set_option(<bang>1)
 
 
 " Restore

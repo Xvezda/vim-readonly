@@ -30,10 +30,13 @@ Use `:Readonly` to manually enable readonly option, and `:Readonly!` to disable.
 
 ## Global options
 
-| Flag                   | Description                                        |
-| ---------------------- | -------------------------------------------------- |
-| `g:readonly_automatic` | Automatically set readonly when patterns are match |
-| `g:readonly_paths`     | Set patterns of path to set readonly option        |
+| Flag                          | Description                                                               | Default                                                       |
+| ----------------------        | --------------------------------------------------                        | -------                                                       |
+| `g:readonly_automatic`        | Automatically set readonly when patterns are match                        | `1`                                                           |
+| `g:readonly_paths`            | Set patterns of path to set readonly option                               | `['/usr/bin/lib/', '/usr/local/lib/', '/usr/local/include/']` |
+| `g:readonly_nodejs`           | Add NodeJs package path to readonly paths                                 | `1`                                                           |
+| `g:readonly_python`           | Add python package path to readonly paths                                 | `1`                                                           |
+| `g:readonly_check_virtualenv` | Add python virtualenv path to readonly paths when virtualenv is activated | `1`                                                           |
 
 
 ## License

@@ -1,0 +1,9 @@
+{
+    "name": "vim-readonly",
+    "author": "Xvezda <xvezda@naver.com>",
+    "license": "MIT",
+    "type": "utility",
+    "required": "7.0",
+    "version": "1.0",
+    "summary": "Automatically set readonly option on specific files."
+}

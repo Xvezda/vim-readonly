@@ -80,8 +80,29 @@ if !exists('g:readonly_paths')
   endif
   " Add python path
   if g:readonly_python
-    if !empty($PYTHONPATH)
-      call extend(g:readonly_paths, split($PYTHONPATH, ':'))
+    " if !empty($PYTHONPATH)
+    "   call extend(g:readonly_paths, split($PYTHONPATH, ':'))
+    " endif
+    let py2_exists = executable('python')
+    let py3_exists = executable('python')
+    if py2_exists || py3_exists
+      if py2_exists
+        let py_executable = 'python'
+      elseif py3_exists
+        let py_executable = 'python3'
+      endif
+      let cmd_string = py_executable . " -c 'import sys; print(sys.path)'"
+      call extend(g:readonly_paths, eval(system(cmd_string)[:-2]))
+    endif
+    if has('pythonx')
+      pythonx <<EOD
+import vim, sys, os
+readonly_paths = vim.vars['readonly_paths']
+sys_paths = sys.path[2:]
+sys_paths = list(map(lambda x: os.path.realpath(x), sys_paths))
+readonly_paths.extend(sys_paths)
+vim.vars['readonly_paths'] = readonly_paths
+EOD
     endif
     if !g:readonly_check_virtualenv || !empty($VIRTUAL_ENV)
       call extend(g:readonly_paths, ['/venv/', '/env/'])

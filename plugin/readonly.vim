@@ -91,7 +91,7 @@ if !exists('g:readonly_paths')
       elseif py3_exists
         let py_executable = 'python3'
       endif
-      let cmd_string = py_executable . " -c 'import sys; print(sys.path)'"
+      let cmd_string = py_executable . " -c 'import sys; print(sys.path[2:])'"
       call extend(g:readonly_paths, eval(system(cmd_string)[:-2]))
     endif
     if has('pythonx')
@@ -99,7 +99,6 @@ if !exists('g:readonly_paths')
 import vim, sys, os
 readonly_paths = vim.vars['readonly_paths']
 sys_paths = sys.path[2:]
-sys_paths = list(map(lambda x: os.path.realpath(x), sys_paths))
 readonly_paths.extend(sys_paths)
 vim.vars['readonly_paths'] = readonly_paths
 EOD

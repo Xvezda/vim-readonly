@@ -84,7 +84,7 @@ if !exists('g:readonly_paths')
     "   call extend(g:readonly_paths, split($PYTHONPATH, ':'))
     " endif
     let py2_exists = executable('python')
-    let py3_exists = executable('python')
+    let py3_exists = executable('python3')
     if py2_exists || py3_exists
       if py2_exists
         let py_executable = 'python'

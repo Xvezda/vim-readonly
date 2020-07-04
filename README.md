@@ -39,6 +39,13 @@ Use `:Readonly` to manually enable readonly option, and `:Readonly!` to disable.
 | `g:readonly_check_virtualenv` | Add python virtualenv path to readonly paths when virtualenv is activated | `1`                                                           |
 
 
-## License
+## Homepage
 
-[MIT License](LICENSE)
+https://github.com/Xvezda/vim-readonly
+
+
+## Copyright
+
+Copyright (C) 2020 Xvezda
+
+MIT License

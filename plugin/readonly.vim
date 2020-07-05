@@ -132,7 +132,7 @@ import vim
 readonly_paths = vim.vars['readonly_paths']
 
 sys_paths = sys.path[2:]
-paths = set(readonly_paths + sys_paths)
+paths = set(list(readonly_paths) + sys_paths)
 editables = editable_dists()
 
 for dist in editables:

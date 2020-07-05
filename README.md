@@ -1,4 +1,6 @@
 # readonly.vim
+[![Script manager: vishop](https://img.shields.io/badge/script%20manager-vishop-blueviolet)](https://github.com/Xvezda/vishop)
+
 Automatically set readonly option on specific files.
 
 This plugin is useful when if you are person like me,

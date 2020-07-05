@@ -4,6 +4,6 @@
     "license": "MIT",
     "type": "utility",
     "required": "7.0",
-    "version": "1.0",
+    "version": "1.1",
     "summary": "Automatically set readonly option on specific files."
 }

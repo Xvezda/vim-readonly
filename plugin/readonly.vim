@@ -50,59 +50,62 @@ function! s:check_path() abort
 endfunction
 
 
-if !exists('g:readonly_automatic')
-  let g:readonly_automatic = 1
-endif
-
-if !exists('g:readonly_nodejs')
-  let g:readonly_nodejs = 1
-endif
-
-if !exists('g:readonly_python')
-  let g:readonly_python = 1
-endif
-
-if !exists('g:readonly_check_virtualenv')
-  let g:readonly_check_virtualenv = 1
-endif
-
-
-" Option variables
-if !exists('g:readonly_paths')
-  let g:readonly_paths = [
-        \   '/usr/bin/lib',
-        \   '/usr/local/lib/',
-        \   '/usr/local/include/'
-        \ ]
-  " Add NodeJs Path
-  if g:readonly_nodejs
-    call extend(g:readonly_paths, ['/node_modules/'])
+function! s:set_defaults() abort
+  if !exists('g:readonly_automatic')
+    let g:readonly_automatic = 1
   endif
-  " Add python path
-  if g:readonly_python
-    " if !empty($PYTHONPATH)
-    "   call extend(g:readonly_paths, split($PYTHONPATH, ':'))
-    " endif
-    let py2_exists = executable('python')
-    let py3_exists = executable('python3')
-    if py2_exists || py3_exists
-      if py2_exists
-        let py_executable = 'python'
-      elseif py3_exists
-        let py_executable = 'python3'
-      endif
-      let cmd_string = py_executable . " -c 'import sys;"
-            \ . ' print(list(map(lambda p: p.replace(" ", r"\ "), sys.path[2:])))'
-            \ . "'"
-      let sys_paths = eval(system(cmd_string)[:-2])
-      call extend(g:readonly_paths, sys_paths)
+
+  if !exists('g:readonly_nodejs')
+    let g:readonly_nodejs = 1
+  endif
+
+  if !exists('g:readonly_python')
+    let g:readonly_python = 1
+  endif
+
+  if !exists('g:readonly_check_virtualenv')
+    let g:readonly_check_virtualenv = 1
+  endif
+endfunction
+
+
+function! s:extend_paths() abort
+  " Option variables
+  if !exists('g:readonly_paths')
+    let g:readonly_paths = [
+          \   '/usr/bin/lib',
+          \   '/usr/local/lib/',
+          \   '/usr/local/include/'
+          \ ]
+    " Add NodeJs Path
+    if g:readonly_nodejs
+      call extend(g:readonly_paths, ['/node_modules/'])
     endif
-    if has('pythonx')
-      for path in sys_paths
-        exec "pythonx import sys; sys.path.append('" . path . "')"
-      endfor
-      " https://stackoverflow.com/a/40835950/11621603
-      pythonx <<EOD
+    " Add python path
+    if g:readonly_python
+      " if !empty($PYTHONPATH)
+      "   call extend(g:readonly_paths, split($PYTHONPATH, ':'))
+      " endif
+      let py2_exists = executable('python')
+      let py3_exists = executable('python3')
+      if py2_exists || py3_exists
+        if py2_exists
+          let py_executable = 'python'
+        elseif py3_exists
+          let py_executable = 'python3'
+        endif
+        let cmd_string = py_executable . " -c 'import sys;"
+              \ . ' print(list(map(lambda p: p.replace(" ", r"\ "), sys.path[2:])))'
+              \ . "'"
+        let sys_paths = eval(system(cmd_string)[:-2])
+        call extend(g:readonly_paths, sys_paths)
+      endif
+      if has('pythonx')
+        for path in sys_paths
+          exec "pythonx import sys; sys.path.append('" . path . "')"
+        endfor
+        " https://stackoverflow.com/a/40835950/11621603
+        pythonx <<EOD
 import sys, os
 
 def dist_is_editable(dist):
@@ -126,8 +129,8 @@ def editable_dists():
     return editables
 EOD
 
-      " Inject sys path
-      pythonx <<EOD
+        " Inject sys path
+        pythonx <<EOD
 import vim
 readonly_paths = vim.vars['readonly_paths']
 
@@ -144,12 +147,21 @@ for dist in editables:
 readonly_paths = list(paths)
 vim.vars['readonly_paths'] = readonly_paths
 EOD
-    endif
-    if !g:readonly_check_virtualenv || !empty($VIRTUAL_ENV)
-      call extend(g:readonly_paths, ['/venv/', '/env/'])
+      endif
+      if !g:readonly_check_virtualenv || !empty($VIRTUAL_ENV)
+        call extend(g:readonly_paths, ['/venv/', '/env/'])
+      endif
     endif
   endif
-endif
+endfunction
+
+
+function! s:init() abort
+  call s:set_defaults()
+  call s:extend_paths()
+endfunction
+
+call s:init()
 
 
 if g:readonly_automatic

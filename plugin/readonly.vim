@@ -97,7 +97,11 @@ function! s:extend_paths() abort
         let cmd_string = py_executable . " -c 'import sys;"
               \ . ' print(list(map(lambda p: p.replace(" ", r"\ "), sys.path[2:])))'
               \ . "'"
-        let sys_paths = eval(system(cmd_string)[:-2])
+        try
+          let sys_paths = eval(system(cmd_string)[:-2])
+        catch
+          let sys_paths = []
+        endtry
         call extend(g:readonly_paths, sys_paths)
       endif
       if has('pythonx')

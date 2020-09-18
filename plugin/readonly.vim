@@ -83,77 +83,20 @@ function! s:extend_paths() abort
     endif
     " Add python path
     if g:readonly_python
-      " if !empty($PYTHONPATH)
-      "   call extend(g:readonly_paths, split($PYTHONPATH, ':'))
-      " endif
-      let py2_exists = executable('python')
-      let py3_exists = executable('python3')
-      if py2_exists || py3_exists
-        if py2_exists
-          let py_executable = 'python'
-        elseif py3_exists
-          let py_executable = 'python3'
-        endif
-        let cmd_string = py_executable . " -c 'import sys;"
-              \ . ' print(list(map(lambda p: p.replace(" ", r"\ "), sys.path[2:])))'
-              \ . "'"
-        try
-          let sys_paths = eval(system(cmd_string)[:-2])
-        catch
-          let sys_paths = []
-        endtry
-        call extend(g:readonly_paths, sys_paths)
-      endif
-      if has('pythonx')
-        for path in sys_paths
-          exec "pythonx import sys; sys.path.append('" . path . "')"
-        endfor
-        " https://stackoverflow.com/a/40835950/11621603
-        pythonx <<EOD
-import sys, os
+      call extend(g:readonly_paths, ['/site-packages/\?'])
+      " PEP 440
+      call extend(g:readonly_paths, [
+            \ '/python\d\+\(\.\d*\)*'
+            \ . '\(\.\([abc]\|alpha\|beta\|pre\|preview\)\d*\)\?'
+            \ . '\(\.post\d\+\)\?'
+            \ . '\(\.dev\d\+\)\?/\?'
+            \ ])
 
-def dist_is_editable(dist):
-    """Is distribution an editable install?"""
-    for path_item in sys.path:
-        egg_link = os.path.join(path_item, dist.project_name + '.egg-link')
-        if os.path.isfile(egg_link):
-            return True
-    return False
-
-def editable_dists():
-    editables = []
-    try:
-        import pip, pkg_resources
-    except ImportError:
-        return editables
-    distributions = {v.key: v for v in pkg_resources.working_set}
-    for dist in distributions.values():
-        if dist_is_editable(dist):
-            editables.append(dist)
-    return editables
-EOD
-
-        " Inject sys path
-        pythonx <<EOD
-import vim
-readonly_paths = vim.vars['readonly_paths']
-
-sys_paths = sys.path[2:]
-paths = set(list(readonly_paths) + sys_paths)
-editables = editable_dists()
-
-for dist in editables:
-    try:
-        paths.remove(dist.location)
-    except KeyError:
-        continue
-
-readonly_paths = list(paths)
-vim.vars['readonly_paths'] = readonly_paths
-EOD
+      if !empty($PYTHONPATH)
+        call extend(g:readonly_paths, split($PYTHONPATH, ':'))
       endif
       if !g:readonly_check_virtualenv || !empty($VIRTUAL_ENV)
-        call extend(g:readonly_paths, ['/venv/', '/env/'])
+        call extend(g:readonly_paths, ['/venv/'])
       endif
     endif
   endif

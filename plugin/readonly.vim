@@ -77,6 +77,10 @@ function! s:extend_paths() abort
           \   '/usr/local/lib/',
           \   '/usr/local/include/'
           \ ]
+    " Add vim runtime path
+    if !empty($VIMRUNTIME)
+      call extend(g:readonly_paths, [$VIMRUNTIME])
+    endif
     " Add NodeJs Path
     if g:readonly_nodejs
       call extend(g:readonly_paths, ['/node_modules/'])
